@@ -264,7 +264,6 @@ def request_args(contract, function):
 # send a transaction using a contract account
 def nile_send(user_alias, contract_alias, function_name, args):
     to_pass = "nile send " + user_alias + ' ' + contract_alias + " " + function_name + ' '
-    print(args)
     for arg in args:
         for key, val in arg.items():
             if val == 'Uint256':
@@ -540,6 +539,7 @@ async def main():
     options.append('print_contracts')
     options.append('load_abi')
 
+    print()
     output.info("Loading the abi in the folder artifacts/abi")
     output.info("Parsing the custom structs of the contracts in the artifacs/abi folder")
     # load cached contracts and acconts 
