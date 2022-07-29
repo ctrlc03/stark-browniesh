@@ -230,18 +230,17 @@ def request_args(contract, function):
                                     tmp_input = hex_to_felt(tmp_input)
                                 elif not tmp_input.isnumeric():
                                     tmp_input = str_to_felt(tmp_input)                            
-
-
                             args.append({tmp_input: value})    
             else:
                 tmp_input =  input("stark_brownie#> " + argument['name'] + " (" + argument['type'] + ") ")
                 if argument['type'] == "felt":
                     if len(tmp_input) == 66:
                         tmp_input = hex_to_felt(tmp_input)
-                    elif not tmp_input.isnumeric():
+                    elif tmp_input.startswith("0x") and len(tmp_input) == 65:
+                        new_string = tmp_input[:2] + "0" + tmp_input[2:]
+                        tmp_input = hex_to_felt(new_string)
+                    elif not tmp_input.isnumeric(): # hex account can be 66 or 65 if you omit the 0 after 0x
                         tmp_input = str_to_felt(tmp_input)
-                    else:
-                        tmp_input = int(tmp_input)
                 elif argument['type'] == "Uint256":
                     tmp_input = to_uint(int(tmp_input))
                 elif argument['type'] == "felt*":
@@ -682,7 +681,7 @@ async def main():
                     continue 
             except KeyboardInterrupt:
                 print()
-                output.info('Stopped action\n')
+                output.info('Stopped action')
                 pass 
         except KeyboardInterrupt:
             print()
