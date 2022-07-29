@@ -20,6 +20,7 @@ block and time management would be a pain, so just resorted calling `nile` funct
 * `deploy` to deploy a contract
 * `declare` to declare a contract class
 * `setup` to deploy a contract account -> you will need to set the env variables for them before launching the tool (`export user1=1234`)
+* `debug` to debug a tx from its tx_hash 
 * `timestamp` to get the timestamp of the block 
 * `increase_time` to increase the time of the next block (you can deploy a contract to move to the next block after this)
 * `structs` to print all of the structs of a contract 
