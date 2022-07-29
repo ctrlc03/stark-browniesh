@@ -216,33 +216,23 @@ def request_args(contract, function):
         for argument in function_data: # now we have a dict
             struct_data = get_struct_data_from_source_and_name(contract, argument['type'])
             if struct_data:
-                print("not none")
-                for _, members in struct_data.items():
-                    tmp_args = {
-                        argument: [
-
-                        ]
-                    }
-                    for member in members:
-                        for member_name, member_type in member.items():
-                            tmp_input = input("stark_brownie#> " + member_name + " (" + member_type + ") ") 
-                            if member_type == "felt":
+                if argument['type'] == "Uint256":
+                    tmp_input = int(input("stark_brownie#> " + argument['name'] + ' (' + str(argument['type']) + ') '))
+                    tmp_input = to_uint(tmp_input)
+                    args.append({tmp_input: argument['type']})
+                else:
+                    for _, members in struct_data.items():
+                        for member, value in members.items():
+                            output.info(argument['name'] + ' (' + str(argument['type']) + ')')
+                            tmp_input = input("stark_brownie#> " + member + " (" + value + ") ") 
+                            if value == "felt":
                                 if len(tmp_input) == 66:
                                     tmp_input = hex_to_felt(tmp_input)
                                 elif not tmp_input.isnumeric():
-                                    tmp_input = str_to_felt(tmp_input)
-                                #     else:
-                                #         tmp_input = int(tmp_input)
-                                
-                            elif member_type == "Uint256":
-                                tmp_input = to_uint(tmp_input)
-                            tmp_args[argument].append(
-                                {
-                                    tmp_input : member_type
-                                }
-                                
-                            )
-                    args.apend(tmp_args)    
+                                    tmp_input = str_to_felt(tmp_input)                            
+
+
+                            args.append({tmp_input: value})    
             else:
                 tmp_input =  input("stark_brownie#> " + argument['name'] + " (" + argument['type'] + ") ")
                 if argument['type'] == "felt":
@@ -274,6 +264,7 @@ def request_args(contract, function):
 # send a transaction using a contract account
 def nile_send(user_alias, contract_alias, function_name, args):
     to_pass = "nile send " + user_alias + ' ' + contract_alias + " " + function_name + ' '
+    print(args)
     for arg in args:
         for key, val in arg.items():
             if val == 'Uint256':
@@ -691,7 +682,7 @@ async def main():
                     continue 
             except KeyboardInterrupt:
                 print()
-                output.info('Stopped action')
+                output.info('Stopped action\n')
                 pass 
         except KeyboardInterrupt:
             print()
