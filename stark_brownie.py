@@ -212,53 +212,57 @@ def nile_debug(tx_hash):
 def request_args(contract, function):
     function_data = get_function_inputs_from_contract_and_function_name(contract, function)   
     args = []
-    if len(function_data) > 0:
-        for argument in function_data: # now we have a dict
-            struct_data = get_struct_data_from_source_and_name(contract, argument['type'])
-            if struct_data:
-                if argument['type'] == "Uint256":
-                    tmp_input = int(input("stark_brownie#> " + argument['name'] + ' (' + str(argument['type']) + ') '))
-                    tmp_input = to_uint(tmp_input)
-                    args.append({tmp_input: argument['type']})
+    try:
+        if len(function_data) > 0:
+            for argument in function_data: # now we have a dict
+                struct_data = get_struct_data_from_source_and_name(contract, argument['type'])
+                if struct_data:
+                    if argument['type'] == "Uint256":
+                        tmp_input = int(input("stark_brownie#> " + argument['name'] + ' (' + str(argument['type']) + ') '))
+                        tmp_input = to_uint(tmp_input)
+                        args.append({tmp_input: argument['type']})
+                    else:
+                        for _, members in struct_data.items():
+                            for member, value in members.items():
+                                output.info(argument['name'] + ' (' + str(argument['type']) + ')')
+                                tmp_input = input("stark_brownie#> " + member + " (" + value + ") ") 
+                                if value == "felt":
+                                    if len(tmp_input) == 66:
+                                        tmp_input = hex_to_felt(tmp_input)
+                                    elif not tmp_input.isnumeric():
+                                        tmp_input = str_to_felt(tmp_input)                            
+                                args.append({tmp_input: value})    
                 else:
-                    for _, members in struct_data.items():
-                        for member, value in members.items():
-                            output.info(argument['name'] + ' (' + str(argument['type']) + ')')
-                            tmp_input = input("stark_brownie#> " + member + " (" + value + ") ") 
-                            if value == "felt":
-                                if len(tmp_input) == 66:
-                                    tmp_input = hex_to_felt(tmp_input)
-                                elif not tmp_input.isnumeric():
-                                    tmp_input = str_to_felt(tmp_input)                            
-                            args.append({tmp_input: value})    
-            else:
-                tmp_input =  input("stark_brownie#> " + argument['name'] + " (" + argument['type'] + ") ")
-                if argument['type'] == "felt":
-                    if len(tmp_input) == 66:
-                        tmp_input = hex_to_felt(tmp_input)
-                    elif tmp_input.startswith("0x") and len(tmp_input) == 65:
-                        new_string = tmp_input[:2] + "0" + tmp_input[2:]
-                        tmp_input = hex_to_felt(new_string)
-                    elif not tmp_input.isnumeric(): # hex account can be 66 or 65 if you omit the 0 after 0x
-                        tmp_input = str_to_felt(tmp_input)
-                elif argument['type'] == "Uint256":
-                    tmp_input = to_uint(int(tmp_input))
-                elif argument['type'] == "felt*":
-                    my_temp = tmp_input.split(" ")
-                    tmp_input = ""
-                    for tmp in my_temp:
-                        if len(tmp) == 66:
-                            tmp_input = tmp_input + str(hex_to_felt(tmp))
-                        elif not tmp_input.isnumeric():
-                            tmp_input = tmp_input + str(str_to_felt(tmp_input))
-                        else:
-                            tmp_input = tmp_input + str(int(tmp_input))
-                args.append(
-                    {
-                        tmp_input : argument['type']
-                    }
-                )
-    return args 
+                    tmp_input =  input("stark_brownie#> " + argument['name'] + " (" + argument['type'] + ") ")
+                    if argument['type'] == "felt":
+                        if len(tmp_input) == 66:
+                            tmp_input = hex_to_felt(tmp_input)
+                        elif tmp_input.startswith("0x") and len(tmp_input) == 65:
+                            new_string = tmp_input[:2] + "0" + tmp_input[2:]
+                            tmp_input = hex_to_felt(new_string)
+                        elif not tmp_input.isnumeric(): # hex account can be 66 or 65 if you omit the 0 after 0x
+                            tmp_input = str_to_felt(tmp_input)
+                    elif argument['type'] == "Uint256":
+                        tmp_input = to_uint(int(tmp_input))
+                    elif argument['type'] == "felt*":
+                        my_temp = tmp_input.split(" ")
+                        tmp_input = ""
+                        for tmp in my_temp:
+                            if len(tmp) == 66:
+                                tmp_input = tmp_input + str(hex_to_felt(tmp))
+                            elif not tmp_input.isnumeric():
+                                tmp_input = tmp_input + str(str_to_felt(tmp_input))
+                            else:
+                                tmp_input = tmp_input + str(int(tmp_input))
+                    args.append(
+                        {
+                            tmp_input : argument['type']
+                        }
+                    )
+        return args 
+    except Exception as e:
+        output.redd(str(e))
+        return args 
 
 # send a transaction using a contract account
 def nile_send(user_alias, contract_alias, function_name, args):
