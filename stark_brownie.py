@@ -249,11 +249,12 @@ def request_args(contract, function):
                         tmp_input = ""
                         for tmp in my_temp:
                             if len(tmp) == 66:
-                                tmp_input = tmp_input + str(hex_to_felt(tmp))
-                            elif not tmp_input.isnumeric():
-                                tmp_input = tmp_input + str(str_to_felt(tmp_input))
+                                tmp_input = tmp_input + ' ' + str(hex_to_felt(tmp))
+                            elif not tmp.isnumeric():
+                                tmp_input = tmp_input + ' ' + str(str_to_felt(tmp))
                             else:
-                                tmp_input = tmp_input + str(int(tmp_input))
+                                tmp_input = tmp_input + ' ' + str(tmp)
+                        print(tmp_input)
                     args.append(
                         {
                             tmp_input : argument['type']
@@ -346,7 +347,6 @@ def get_timestamp():
     resp = requests.post(url, json=data, headers=headers)
     if resp.status_code == 200:
         data = json.loads(resp.text)
-        print()
         output.greenn(data['result']['timestamp'])
     else:
         output.redd("Failed to get the current timestamp")
