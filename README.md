@@ -1,6 +1,6 @@
-# nile-wrapper-starknet or as I like Brownie, stark_brownie 
+# As I like Brownie, stark_brownie 
 
-A CLI wrapper for nile (OZ) to help with testing and auditing smart contracts. 
+A CLI wrapper for nile (OZ) and starknet-devnet (Shard-Labs) to help with testing and auditing smart contracts. 
 
 Ultimately this could just be incorporated with nile, however I had started this using starkware testing Starknet Python class, realized 
 block and time management would be a pain, so just resorted calling `nile` functions and the `starknet-devnet` API from this tool. 
