@@ -7,7 +7,7 @@ block and time management would be a pain, so just resorted calling `nile` funct
 
 ## How to use 
 
-* Clone this repo inside your folder
+* Clone this repo inside the folder with contracts to audit/test
 * Compile contracts with nile (`nile compile`)
 * Launch a `starknet-devnet` node (`nile node`) 
 * Launch `stark_brownie.py` and pass the abis path 
