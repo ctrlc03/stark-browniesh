@@ -12,7 +12,7 @@ block and time management would be a pain, so just resorted calling `nile` funct
 * Launch a `starknet-devnet` node (`nile node`) 
 * Launch `stark_brownie.py` and pass the abis path 
 
-***NOTE*** For now, use `nile` version 0.9.0 and compatible versions of `starknet-devnet` and `cairo-lang` as `nile` does not support the `no-wallet` option yet
+***NOTE*** For now, use `nile` version 0.9.0 and compatible versions of `starknet-devnet` and `cairo-lang` as `nile` does not support the `no-wallet` option yet, or just install `nile` directly from the latest main branch.
 
 ## Functionality 
 
